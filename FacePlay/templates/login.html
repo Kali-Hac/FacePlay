@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>堂堂查</title>
+  <!-- Bootstrap core CSS-->
+  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="/static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Custom styles for this template-->
+  <link href="/static/css/sb-admin.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark">
+<script>{{login_msg}}</script>
+    <div class="container"  id="facelogin"  style="display:none;">
+    <div class="card card-login mx-auto mt-5">
+      <div class="card-header">Face Login</div>
+      <div class="card-body">
+        <video id="video" autoplay style="width: 360px;height: 300px"></video>
+        <p id="msg" align="center" style="margin-bottom: 10px">请将人脸对准摄像头，正在准备识别...</p>
+          <!--拍照按钮-->
+          <!--<button id="capture">拍照</button>-->
+          <!--描绘video截图-->
+        <!--采用js请求而不直接使用POST-->
+        <!--<form action="upload" method="POST">-->
+            <!--{% csrf_token %}-->
+          <input id="image" style="display:none" name="upload_img" value=""/>
+        <!--</form>-->
+        <canvas id="canvas" style="margin:0 auto; display:none"  width="360" height="300" ></canvas>
+         <img src="" id="temp_img" style="display: none">
+        <a onclick="change_login()" class="btn btn-primary btn-block">Ordinary Login</a>
+          <a href="register" class="btn btn-primary btn-block" style="background-color: #0cd06c">Register</a>
+        <div id="change" ></div>
+      </div>
+     </div>
+    </div>
+   <div class="container"  id="login" style="display:block;" >
+    <div class="card card-login mx-auto mt-5">
+      <div class="card-header">Login</div>
+      <div class="card-body">
+        <form action="./" method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="exampleInputEmail1">ID (教师/学生)</label>
+            <input class="form-control" id="exampleInputEmail1" name="lg_id" type="email" aria-describedby="emailHelp" placeholder="Enter Id">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input class="form-control" id="exampleInputPassword1" name="lg_pwd" type="password" placeholder="Password">
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox"> Remember Password</label>
+            </div>
+          </div>
+          <a onclick="submit()" class="btn btn-primary btn-block">Login</a>
+          <a onclick="open_camera('login')" class="btn btn-primary btn-block" style="background-color: #0cd06c">Face Login</a>
+        </form>
+        <div class="text-center">
+          <a class="d-block small mt-3" href="register">Register an Account</a>
+          <a class="d-block small" href="forgot-password">Forgot Password?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap core JavaScript-->
+  <script src="/static/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/js/submit.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <!--控制人脸识别开关的函数-->
+  <script src="/static/js/camera.js"></script>
+</body>
+
+</html>

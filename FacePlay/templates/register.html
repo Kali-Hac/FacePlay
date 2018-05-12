@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>SB Admin - Start Bootstrap Template</title>
+  <!-- Bootstrap core CSS-->
+  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="/static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Custom styles for this template-->
+  <link href="/static/css/sb-admin.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark">
+  <div class="container">
+    <div class="card card-register mx-auto mt-5">
+      <div class="card-header">Register an Account</div>
+      <div class="card-body">
+        <form id="form">
+           {% csrf_token %}
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6">
+                <label for="exampleInputName">姓名</label>
+                <input class="form-control" id="exampleInputName" name="name" type="text" aria-describedby="nameHelp" placeholder="Enter name">
+              </div>
+              <div class="col-md-6">
+                <label>人脸身份验证</label>
+                <a onclick="open_camera('register')" class="btn btn-block"  style="background-color:#0cd06c;" id="open_camera">请先完善个人信息并确认</a>
+              </div>
+               <input id="image" style="display:none" name="upload_img" value=""/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">学号</label>
+            <input class="form-control"  name="id"  aria-describedby="emailHelp" placeholder="Enter id">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">手机</label>
+            <input class="form-control" id="exampleInputEmail1" name="tel"  aria-describedby="emailHelp" placeholder="Enter Tel">
+          </div>
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6">
+                <label for="exampleInputPassword1">密码</label>
+                <input class="form-control" id="exampleInputPassword1" name="password" type="password" placeholder="Password">
+              </div>
+              <div class="col-md-6">
+                <label for="exampleConfirmPassword">确认密码 {{message}}</label>
+                <input class="form-control" id="exampleConfirmPassword" name="r_password" type="password" placeholder="Confirm password">
+              </div>
+            </div>
+          </div>
+          <!--<input type="submit" class="btn btn-primary btn-block">-->
+        </form>
+         <button onclick="check()" id="register" class="btn btn-primary btn-block">点击确认信息</button>
+        <div class="text-center">
+          <a class="d-block small mt-3" href="login">Login Page</a>
+          <a class="d-block small" href="forgot-password"  style="margin-bottom:10px" >Forgot Password?</a>
+                <!--video用于显示媒体设备的视频流，自动播放-->
+          <div id="camera_block" style="display:none">
+          <video id="video" autoplay style="width: 480px;height: 320px;margin-bottom:10px"></video>
+          <!--拍照按钮-->
+          <div>
+            <button id="capture" onclick="take_photo()" class="btn btn-primary btn-block" style="margin-bottom:10px">拍照</button>
+            <!--把照片传回后台-->
+            <!--<form action="upload" method="POST" id="arryForm">-->
+            <!--{% csrf_token %}-->
+            <!--<img src="" id="image" name="upload_img" style="display: block;margin:0 auto;">-->
+            <!--<input id="image" style="display:none" name="upload_img" value=""/>-->
+            <button id="upload"  class="btn btn-primary btn-block" onclick="post_img(); " style="margin-bottom:10px; display: none"></button>
+            <!--<input type="file" id="file" name="file" onchange="saveFile();"/>-->
+          <!--<input type="text" id="filename" />-->
+          <!--</form>-->
+          <!--结束-->
+          </div>
+        </div>
+          <!--描绘video截图-->
+          <canvas id="canvas" style="display: none;margin:0 auto;" width="480" height="320" ></canvas>
+          <img src="" id="temp_img" style="display: none">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap core JavaScript-->
+  <script src="/static/js/check_rules.js"></script>
+  <script src="/static/js/camera.js"></script>
+  <script src="/static/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+</body>
+
+</html>
