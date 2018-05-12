@@ -1,0 +1,54 @@
+<style>
+.max{width:800px;height:auto;}
+.min{width:200px;height:auto;}
+</style>
+
+<div class="row">
+	<div class="col-lg-9">
+		 <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-area-chart"></i>上传申诉照片</div>
+        <div class="card-body">
+         
+	         <form class="container" enctype="multipart/form-data" method="post" id='formBox' name="form">
+       <input type="file" id="filechooser" />
+		<img alt="Image Previewer" id="previewer"></form>
+		         <script>
+			         var filechooser = document.getElementById('filechooser');
+var previewer = document.getElementById('previewer');
+
+filechooser.onchange = function() {
+    var files = this.files;
+    var file = files[0];
+
+    // 接受 jpeg, jpg, png 类型的图片
+    if (!/\/(?:jpeg|jpg|png)/i.test(file.type)) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function() {
+        var result = this.result;
+
+        previewer.src = result;
+
+        // 清空图片上传框的值
+        <!--filechooser.value = '';-->
+    };
+
+    reader.readAsDataURL(file);
+};
+		         </script>
+        </div>
+        <div class="card-footer small text-muted">Updated at 2018.5.12 11:59 PM</div>
+      </div>
+	</div>
+<div class="card mb-3">
+            <div class="card-header">
+              <i class="fa fa-pie-chart"></i>情况说明</div>
+            <div class="card-body">
+             <textarea rows="5" cols="20">请在这里输入申诉理由.....</textarea>
+	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0">提交申诉</a>
+            </div>
+            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+          </div>
+</div>

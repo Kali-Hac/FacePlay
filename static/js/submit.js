@@ -1,9 +1,11 @@
+var port = '8778';
+
 function submit()
 {
 	// document.forms[0].submit();
 	// console.log(exampleInputEmail1.value,exampleInputPassword1.value);
 	 // url需要改,change，192.168.188.105
-	 $.post("https://localhost:8888/FacePlay/login_check", {'lg_id' : exampleInputEmail1.value,
+	 $.post("https://localhost:"+ port + "/FacePlay/login_check", {'lg_id' : exampleInputEmail1.value,
 	 	'lg_pwd': exampleInputPassword1.value},
       function(data, status){
           $('#msg').html(data);
@@ -12,7 +14,53 @@ function submit()
 
 function charts()
 {
-	$.post("https://localhost:8778/FacePlay/charts", {},
+	$.post("https://localhost:"+ port + "/FacePlay/charts", {},
+            function(data, status){
+              $('#change').html(data);
+       })
+}
+
+function record()
+{
+	$.post("https://localhost:"+ port + "/FacePlay/record", {},
+            function(data, status){
+              $('#change').html(data);
+       })
+}
+
+function read_record()
+{
+	$.post("https://localhost:"+ port + "/FacePlay/read_record", {},
+            function(data, status){
+              $('#change').html(data);
+       })
+}
+
+function send_message()
+{
+	$.post("https://localhost:"+ port + "/FacePlay/send_message", {},
+            function(data, status){
+              $('#change').html(data);
+       })
+}
+
+function send_image()
+{
+	$.post("https://localhost:"+ port + "/FacePlay/send_image", {},
+            function(data, status){
+              $('#change').html(data);
+       })
+}
+
+function upload_image()
+{	
+	var src = document.getElementById('previewer').src;
+	if(src === ''){
+		alert("请在图片完全上传后再确认进行识别！");
+		return;
+	}
+	// console.log(src);
+	$.post("https://localhost:"+ port + "/FacePlay/upload_image", {'t_image': src},
             function(data, status){
               $('#change').html(data);
        })
@@ -61,3 +109,4 @@ function clean_info()
  //        });
 
  //    }
+ 

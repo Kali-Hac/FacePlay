@@ -4,10 +4,12 @@ from django.template import loader
 from FacePlay.models import Student, Teacher, C_S, Course, Photo
 import os, base64
 import datetime
+import numpy as np
 # 关闭以提高速度
 # import main
 
 IMG_base64 = None
+upload_cnt = 0
 # Create your views here.
 def index(request):
 	# if request.method == 'POST':
@@ -31,6 +33,8 @@ def index(request):
 	# 	print("#### 用户刷新界面")
 	return render(request, 'index.html', {'name': request.session["name"]})
 
+def student(request):
+	return render(request, 'student.html', {'name': request.session["name"]})
 
 def login(request):
 	return render(request, 'login.html')
@@ -76,7 +80,10 @@ def register(request):
 			new_user.t_face = "FACEs/" + ID + '/' + tel + '.png'
 		new_user.save()
 		request.session["name"] = name
-		return render(request, 'index.html', {'name': name})
+		if ID[0] == '2':
+			return render(request, 'student.html', {'name': name})
+		else:
+			return render(request, 'index.html', {'name': name})
 	else:
 		return render(request, 'register.html')
 
@@ -178,10 +185,128 @@ def login_check(request):
 			request.session["name"] = name
 			print("登陆进去")
 			# bug
-			return render(request, 'index.html', {'name': name})
+			if ID[0] == '2':
+				return render(request, 'student.html', {'name': name})
+			else:
+				return render(request, 'index.html', {'name': name})
 		return render(request, 'login_unsuccess.html')
 	except:
 		return render(request, 'login_unsuccess.html')
 
 def charts(request):
 	return render(request, 'class_info.html')
+
+def record(request):
+	if not os.path.exists('imgs.npy'):
+		imgs = []
+		for i in range(1, 6):
+			try:
+				with open('Recognition/' + str(i) + '.jpg', "rb") as f:
+					base64_data = base64.b64encode(f.read())
+				base64_data = str(base64_data, encoding="utf-8")
+				image_base64 = "data:image/png;base64," + base64_data
+				imgs.append(image_base64)
+			except:
+				pass
+		np.save('imgs.npy', imgs)
+	else:
+		imgs = np.load('imgs.npy')
+	try:
+		imgs = imgs.tolist()
+	except:
+		pass
+	if len(imgs) < 5:
+		for i in range(5 - len(imgs)):
+			imgs.append('')
+	return render(request, 'record.html', {'img_1': imgs[0], 'img_2': imgs[1],'img_3': imgs[2],'img_4': imgs[3],'img_5': imgs[4],})
+
+def message(request):
+	return render(request, 'message.html')
+
+def read_record(request):
+	if not os.path.exists('imgs.npy'):
+		imgs = []
+		for i in range(1, 6):
+			try:
+				with open('Recognition/' + str(i) + '.jpg', "rb") as f:
+					base64_data = base64.b64encode(f.read())
+				base64_data = str(base64_data, encoding="utf-8")
+				image_base64 = "data:image/png;base64," + base64_data
+				imgs.append(image_base64)
+			except:
+				pass
+		np.save('imgs.npy', imgs)
+	else:
+		imgs = np.load('imgs.npy')
+	try:
+		imgs = imgs.tolist()
+	except:
+		pass
+	if len(imgs) < 5:
+		for i in range(5 - len(imgs)):
+			imgs.append('')
+	return render(request, 'read_record.html', {'img_1': imgs[0], 'img_2': imgs[1],'img_3': imgs[2],'img_4': imgs[3],'img_5': imgs[4],})
+
+def send_message(request):
+	return render(request, 'send_message.html')
+
+def send_image(request):
+	return render(request, 'send_image.html')
+
+# 教师上传图片
+def upload_image(request):
+	global upload_cnt
+	if request.method == 'POST':
+		image_base64 = request.POST.get('t_image')
+		img_strs = image_base64.split(',')[1]
+		imgdata = base64.b64decode(img_strs)  # 解码
+		now = datetime.datetime.now()
+		file = open('face_tmp.png', 'wb')  # 保存为face_tmp.png的图片
+		file.write(imgdata)
+		file.close()
+		upload_cnt += 1
+		# 上传合照并返回未识别的已注册id
+		un_ids = main.compilface('face_tmp.png', upload_cnt)
+		print("未识别到：")
+		print(un_ids)
+		print('upload_cnt: %d' % (upload_cnt))
+		# 采取直接读取一张的操作
+		# with open('Recognition/' + str(upload_cnt) + '.jpg', "rb") as f:
+		# 	base64_data = base64.b64encode(f.read())
+		# base64_data = str(base64_data, encoding="utf-8")
+		# image_base64 = "data:image/png;base64," + base64_data
+
+		# 存储进numpy里加快读取速度
+		if not os.path.exists('imgs.npy'):
+			imgs = []
+			for i in range(1, 6):
+				try:
+					with open('Recognition/' + str(i) + '.jpg', "rb") as f:
+						base64_data = base64.b64encode(f.read())
+					base64_data = str(base64_data, encoding="utf-8")
+					image_base64 = "data:image/png;base64," + base64_data
+					imgs.append(image_base64)
+				except:
+					pass
+			np.save('imgs.npy', imgs)
+		else:
+			imgs = np.load('imgs.npy')
+			try:
+				imgs = imgs.tolist()
+			except:
+				pass
+			with open('Recognition/' + str(upload_cnt) + '.jpg', "rb") as f:
+				base64_data = base64.b64encode(f.read())
+			base64_data = str(base64_data, encoding="utf-8")
+			image_base64 = "data:image/png;base64," + base64_data
+			if len(imgs) == 5:
+				imgs.pop(0)
+				imgs.append(image_base64)
+			else:
+				imgs.append(image_base64)
+			np.save('imgs.npy', imgs)
+		if len(imgs) < 5:
+			for i in range(5 - len(imgs)):
+				imgs.append('')
+		return render(request, 'record.html',
+		              {'img_1': imgs[0], 'img_2': imgs[1], 'img_3': imgs[2], 'img_4': imgs[3], 'img_5': imgs[4], })

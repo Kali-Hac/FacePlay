@@ -122,7 +122,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+# 设置最大上传照片大小
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 

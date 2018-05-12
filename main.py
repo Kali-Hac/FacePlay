@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-☆*°☆*°(∩^o^)~━━  2018/5/5 15:06        
+☆*°☆*°(∩^o^)~━━  2018/5/5 15:06
       (ˉ▽￣～) ~~ 一捆好葱 (*˙︶˙*)☆*°
       Fuction：        √ ━━━━━☆*°☆*°
 """
@@ -273,3 +273,70 @@ def get_face(base64_data):
 # 	print(identfiy_all("me.jpg"))
 
 # identfiy_all('me.jpg')
+
+def malasong(src, upload_cnt):
+	img = cv2.imread(src)
+	tmp = detector.detect_faces(img)
+	faces = []
+	for t in tmp:
+		box = t['box']
+		cv2.rectangle(img, (box[0], box[1]), (box[0] + box[2], box[1] + box[3]), (0, 255, 0), 1)
+		keypoints = t['keypoints']
+		landmark = []
+		for t in list(keypoints.items()):
+			for tt in t[1]:
+				landmark.append(tt)
+		rec = alignment(img, landmark)
+		faces.append(rec)
+	cv2.imwrite('Recognition/' + str(upload_cnt) + '.jpg', img)
+	return faces, img
+
+
+def compilface(src, upload_cnt):  # 输入待匹配的图片路径，输出和数据库中匹配到的图片
+	faces, img = malasong(src, upload_cnt)
+	face_dir = []
+	ids = []
+	for dir in os.listdir('FACEs'):
+		ids.append(dir)
+		for file in os.listdir('FACEs/' + dir):
+			face_dir.append('FACEs/' + dir + '/' + file)
+	print(face_dir)
+	imglist1 = []
+	for file in face_dir:
+		aface = cv2.imread(file)
+		imglist1.append(aface)
+	print(imglist1)
+	imglist2 = []
+	# faces是合照里面的各种脸，对应imglist2
+	for face in faces:
+		imglist2.append(face)
+	i1 = [i for i in imglist1]
+	i2 = [i for i in imglist2]
+	out1 = getOutput(i1)
+	out2 = getOutput(i2)
+	recog_ids = []
+	for j, f1 in enumerate(out1):
+		cos = []
+		for f2 in out2:
+			cosdistance = f1.dot(f2) / (f1.norm() * f2.norm() + 1e-5)
+			cos.append(cosdistance)
+		idx = cos.index(max(cos))
+		if (max(cos) <= 0.3085):
+			# print('no match')
+			continue
+		else:
+			# print(idx, max(cos))
+			recog_ids.append(ids[j])
+			# cv2.imwrite('aface/aface%s_0.jpg' % str(j), imglist1[j])
+			# cv2.imwrite('aface/aface%s_1.jpg' % str(j), imglist2[idx])
+	return list(set(ids) - set(recog_ids))
+
+
+def getOutput(imglist):
+	for i in range(len(imglist)):
+		imglist[i] = imglist[i].transpose(2, 0, 1).reshape((1, 3, 112, 96))
+		imglist[i] = (imglist[i] - 127.5) / 128.0
+	img = np.vstack(imglist)
+	img = Variable(torch.from_numpy(img).float(), volatile=True)
+	output = net(img)
+	return output

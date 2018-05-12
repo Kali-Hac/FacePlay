@@ -19,4 +19,11 @@ urlpatterns = [
     url(r'^face_result$', views.face_result, name='face_result'),
     url(r'^login_check$', views.login_check, name='login_check'),
     url(r'^charts$', views.charts, name='charts'),
+    url(r'^record$', views.record, name='record'),
+    url(r'^message$', views.message, name='message'),
+    url(r'^student$', views.student, name='student'),
+    url(r'^send_message$', views.send_message, name='send_message'),
+    url(r'^read_record$', views.read_record, name='read_record'),
+    url(r'^send_image$', views.send_image, name='send_image'),
+    url(r'^upload_image$', views.upload_image, name='upload_image'),
 ]
