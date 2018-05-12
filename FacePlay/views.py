@@ -6,7 +6,7 @@ import os, base64
 import datetime
 import numpy as np
 # 关闭以提高速度
-# import main
+import main
 
 IMG_base64 = None
 upload_cnt = 0
@@ -31,12 +31,17 @@ def index(request):
 	# 	return render(request, 'login.html')
 	# else:
 	# 	print("#### 用户刷新界面")
-	return render(request, 'index.html', {'name': request.session["name"]})
+	if request.session["type"] == 't':
+		return render(request, 'index.html', {'name': request.session["name"]})
+	else:
+		return render(request, 'student.html', {'name': request.session["name"]})
 
 def student(request):
 	return render(request, 'student.html', {'name': request.session["name"]})
 
 def login(request):
+	request.session.pop("name")
+	request.session.pop("type")
 	return render(request, 'login.html')
 
 
@@ -45,6 +50,8 @@ def forgot(request):
 
 
 def register(request):
+	request.session.pop("name")
+	request.session.pop("type")
 	if request.method == 'POST':
 		name = request.POST.get('name')
 		tel = request.POST.get('tel')
@@ -59,7 +66,7 @@ def register(request):
 		now = datetime.datetime.now()
 		# cv2无法读取'-'和中文
 		register_time = str(now).split()[0].replace("-", '')
-		file = open('FACEs/' + ID + '/' + tel + '.png', 'wb')  # 保存为[时间].png的图片
+		file = open('FACEs/' + ID + '/' + tel + '.jpg', 'wb')  # 保存为[时间].jpg的图片
 		file.write(imgdata)
 		file.close()
 		print("### " + str(now) + " SAVE A FACE IMAGE")
@@ -70,14 +77,14 @@ def register(request):
 			new_user.s_name = name
 			new_user.s_tel = tel
 			new_user.s_pwd = password
-			new_user.s_face = "FACEs/" + ID + '/' + tel + '.png'
+			new_user.s_face = "FACEs/" + ID + '/' + tel + '.jpg'
 		else:
 			new_user = Teacher()
 			new_user.t_id = ID
 			new_user.t_name = name
 			new_user.t_tel = tel
 			new_user.t_pwd = password
-			new_user.t_face = "FACEs/" + ID + '/' + tel + '.png'
+			new_user.t_face = "FACEs/" + ID + '/' + tel + '.jpg'
 		new_user.save()
 		request.session["name"] = name
 		if ID[0] == '2':
@@ -93,13 +100,13 @@ def upload(request):
 		strs = request.POST.get('upload_img').split(',')[1]  # 获取base64编码
 		imgdata = base64.b64decode(strs)  # 解码
 		now = datetime.datetime.now()
-		file = open('face_tmp.png', 'wb')  # 保存为face_tmp.png的图片
+		file = open('face_tmp.jpg', 'wb')  # 保存为face_tmp.jpg的图片
 		file.write(imgdata)
 		file.close()
 		print("### " + str(now) + " SAVE A IMAGE")
-		# main.test(srcimg='face_tmp.png')
+		# main.test(srcimg='face_tmp.jpg')
 
-		# pimg = Image.open('0.png')  # 获取图片
+		# pimg = Image.open('0.jpg')  # 获取图片
 		# cv2.namedWindow("Image")  # 创建窗口
 		# cv2.imshow("Image", pimg)  # 显示图片
 		# cv2.waitKey(0)
@@ -110,6 +117,7 @@ def identify_face(request):
 	global IMG_base64
 	if request.method == 'POST':
 		image_base64 = request.POST.get('image_base64')
+		# print(image_base64)
 		img_strs = image_base64.split(',')[1]
 		imgdata = base64.b64decode(img_strs)  # 解码
 		now = datetime.datetime.now()
@@ -159,11 +167,25 @@ def face_result(request):
 		if not face_identify:
 			strange_face_show = "block"
 		else:
+			try:
+				user = Teacher.objects.get(t_tel=face_name.split('.')[0])
+				face_name = user.t_name
+				request.session["name"] = face_name
+				request.session["type"] = 't'
+			except:
+				try:
+					user = Student.objects.get(s_tel=face_name.split('.')[0])
+					face_name = user.s_name
+					request.session["name"] = face_name
+					request.session["type"] = 's'
+				except:
+					face_name = True
 			entry_show = "block"
 		# print(no_face_show, entry_show, strange_face_show, face_show)
 		return render(request, 'face.html', locals())
 	else:
 		return render(request, "face.html")
+
 
 def login_check(request):
 	ID = request.POST.get('lg_id')
@@ -197,28 +219,32 @@ def charts(request):
 	return render(request, 'class_info.html')
 
 def record(request):
-	if not os.path.exists('imgs.npy'):
-		imgs = []
-		for i in range(1, 6):
-			try:
-				with open('Recognition/' + str(i) + '.jpg', "rb") as f:
-					base64_data = base64.b64encode(f.read())
-				base64_data = str(base64_data, encoding="utf-8")
-				image_base64 = "data:image/png;base64," + base64_data
-				imgs.append(image_base64)
-			except:
-				pass
-		np.save('imgs.npy', imgs)
-	else:
-		imgs = np.load('imgs.npy')
-	try:
-		imgs = imgs.tolist()
-	except:
-		pass
+	imgs = []
+	for i in range(1, 6):
+		try:
+			with open('Recognition/' + str(i) + '.jpg', "rb") as f:
+				base64_data = base64.b64encode(f.read())
+			base64_data = str(base64_data, encoding="utf-8")
+			image_base64 = "data:image/jpg;base64," + base64_data
+			imgs.append(image_base64)
+		except:
+			pass
 	if len(imgs) < 5:
 		for i in range(5 - len(imgs)):
 			imgs.append('')
-	return render(request, 'record.html', {'img_1': imgs[0], 'img_2': imgs[1],'img_3': imgs[2],'img_4': imgs[3],'img_5': imgs[4],})
+	un_ids = [[], [], [], [], [], []]
+	temp = os.listdir('Recognition')
+	for i in temp:
+		if i.split('.')[1] == 'txt':
+			f = open('Recognition/' + i, 'r')
+			lines = f.readlines()
+			names = []
+			for line in lines:
+				names.append(line.replace('\n', ''))
+			un_ids[int(i.split('.')[0][-1])] = names
+	return render(request, 'record.html', {'img_1': imgs[0], 'img_2': imgs[1],
+	'img_3': imgs[2],'img_4': imgs[3],'img_5': imgs[4],'un_ids_1': un_ids[1],
+	'un_ids_2': un_ids[2], 'un_ids_3': un_ids[3], 'un_ids_4': un_ids[4], 'un_ids_5': un_ids[5]})
 
 def message(request):
 	return render(request, 'message.html')
@@ -231,7 +257,7 @@ def read_record(request):
 				with open('Recognition/' + str(i) + '.jpg', "rb") as f:
 					base64_data = base64.b64encode(f.read())
 				base64_data = str(base64_data, encoding="utf-8")
-				image_base64 = "data:image/png;base64," + base64_data
+				image_base64 = "data:image/jpg;base64," + base64_data
 				imgs.append(image_base64)
 			except:
 				pass
@@ -261,52 +287,83 @@ def upload_image(request):
 		img_strs = image_base64.split(',')[1]
 		imgdata = base64.b64decode(img_strs)  # 解码
 		now = datetime.datetime.now()
-		file = open('face_tmp.png', 'wb')  # 保存为face_tmp.png的图片
+		file = open('face_tmp.jpg', 'wb')  # 保存为face_tmp.jpg的图片
 		file.write(imgdata)
 		file.close()
+		if upload_cnt == 5:
+			upload_cnt = 0
 		upload_cnt += 1
 		# 上传合照并返回未识别的已注册id
-		un_ids = main.compilface('face_tmp.png', upload_cnt)
-		print("未识别到：")
+		un_ids = main.compilface('face_tmp.jpg', upload_cnt)
+		print("未识别到id：")
 		print(un_ids)
+		f = open("Recognition/un_names" + str(upload_cnt) + ".txt", 'w')
+		for id in un_ids:
+			print(id)
+			try:
+				user = Teacher.objects.get(t_id=id)
+				f.write(user.t_name + '\n')
+			except:
+				try:
+					user = Student.objects.get(s_id=id)
+					f.write(user.s_name + '\n')
+				except:
+					upload_cnt -= 1
+					pass
+				# f.write(user.s_name + '\n')
+		f.close()
+
 		print('upload_cnt: %d' % (upload_cnt))
+		un_ids = [[], [], [], [], [], []]
+		temp = os.listdir('Recognition')
+		for i in temp:
+			if i.split('.')[1] == 'txt':
+				f = open('Recognition/' + i, 'r')
+				lines = f.readlines()
+				names = []
+				for line in lines:
+					names.append(line.replace('\n', ''))
+				un_ids[int(i.split('.')[0][-1])] = names
 		# 采取直接读取一张的操作
 		# with open('Recognition/' + str(upload_cnt) + '.jpg', "rb") as f:
 		# 	base64_data = base64.b64encode(f.read())
 		# base64_data = str(base64_data, encoding="utf-8")
-		# image_base64 = "data:image/png;base64," + base64_data
+		# image_base64 = "data:image/jpg;base64," + base64_data
 
-		# 存储进numpy里加快读取速度
-		if not os.path.exists('imgs.npy'):
-			imgs = []
-			for i in range(1, 6):
-				try:
-					with open('Recognition/' + str(i) + '.jpg', "rb") as f:
-						base64_data = base64.b64encode(f.read())
-					base64_data = str(base64_data, encoding="utf-8")
-					image_base64 = "data:image/png;base64," + base64_data
-					imgs.append(image_base64)
-				except:
-					pass
-			np.save('imgs.npy', imgs)
-		else:
-			imgs = np.load('imgs.npy')
+		imgs = []
+		for i in range(1, 6):
 			try:
-				imgs = imgs.tolist()
+				with open('Recognition/' + str(i) + '.jpg', "rb") as f:
+					base64_data = base64.b64encode(f.read())
+				base64_data = str(base64_data, encoding="utf-8")
+				image_base64 = "data:image/jpg;base64," + base64_data
+				imgs.append(image_base64)
 			except:
 				pass
-			with open('Recognition/' + str(upload_cnt) + '.jpg', "rb") as f:
-				base64_data = base64.b64encode(f.read())
-			base64_data = str(base64_data, encoding="utf-8")
-			image_base64 = "data:image/png;base64," + base64_data
-			if len(imgs) == 5:
-				imgs.pop(0)
-				imgs.append(image_base64)
-			else:
-				imgs.append(image_base64)
-			np.save('imgs.npy', imgs)
+
+		with open('Recognition/' + str(upload_cnt) + '.jpg', "rb") as f:
+			base64_data = base64.b64encode(f.read())
+		base64_data = str(base64_data, encoding="utf-8")
+		image_base64 = "data:image/jpg;base64," + base64_data
+		if len(imgs) == 5:
+			imgs.pop(0)
+			imgs.append(image_base64)
+		else:
+			imgs.append(image_base64)
+
 		if len(imgs) < 5:
 			for i in range(5 - len(imgs)):
 				imgs.append('')
-		return render(request, 'record.html',
-		              {'img_1': imgs[0], 'img_2': imgs[1], 'img_3': imgs[2], 'img_4': imgs[3], 'img_5': imgs[4], })
+		return render(request, 'record.html', {'img_1': imgs[0], 'img_2': imgs[1],
+		                                       'img_3': imgs[2], 'img_4': imgs[3], 'img_5': imgs[4],
+		                                       'un_ids_1': un_ids[1],
+		                                       'un_ids_2': un_ids[2], 'un_ids_3': un_ids[3], 'un_ids_4': un_ids[4],
+		                                       'un_ids_5': un_ids[5]})
+
+def send_teacher(request):
+	pass
+
+def logout(request):
+	request.session.pop("name")
+	request.session.pop("type")
+	return login(request)

@@ -12,7 +12,7 @@
          
 	         <form class="container" enctype="multipart/form-data" method="post" id='formBox' name="form">
        <input type="file" id="filechooser" />
-		<img alt="Image Previewer" id="previewer"></form>
+		<img alt="Image Previewer" id="previewer" class="min"></form>
 		         <script>
 			         var filechooser = document.getElementById('filechooser');
 var previewer = document.getElementById('previewer');
@@ -46,9 +46,18 @@ filechooser.onchange = function() {
             <div class="card-header">
               <i class="fa fa-pie-chart"></i>情况说明</div>
             <div class="card-body">
-             <textarea rows="5" cols="20">请在这里输入申诉理由.....</textarea>
-	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0">提交申诉</a>
+             <textarea id="msg" rows="5" cols="20">请在这里输入申诉理由.....</textarea>
+	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0" onclick="send_teacher()">提交申诉</a>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
           </div>
 </div>
+</script><script>
+	$(function(){
+$('#previewer').click(function(){
+
+$(this).toggleClass('min');
+$(this).toggleClass('max');
+});
+});
+</script>

@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^read_record$', views.read_record, name='read_record'),
     url(r'^send_image$', views.send_image, name='send_image'),
     url(r'^upload_image$', views.upload_image, name='upload_image'),
+    url(r'^logout$', views.logout, name='logout'),
 ]

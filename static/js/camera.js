@@ -1,4 +1,5 @@
 var port = '8778';
+var ip = 'localhost';
 //访问用户媒体设备的兼容方法
 function getUserMedia(constrains,success,error){
     if(navigator.mediaDevices.getUserMedia){
@@ -98,7 +99,7 @@ if(option === 'login'){
       var process_show = document.getElementById("process_show");
       if(process_show!=null && process_show.style.display==="block"){
         clearInterval(interval);
-         $.post("https://localhost:"+ port + "/FacePlay/face_result", {},
+         $.post("https://"+ip+":"+ port + "/FacePlay/face_result", {},
             function(data, status){
               $('#change').html(data);
         })
@@ -128,7 +129,7 @@ function take_face(){
      image.value = temp_img.src;
      // document.forms[0].submit();
      // url需要改,change
-     $.post("https://local:"+ port + "/FacePlay/identify_face", {'image_base64' : image.value},
+     $.post("https://"+ip+":"+ port + "/FacePlay/identify_face", {'image_base64' : image.value},
       function(data, status){
           $('#change').html(data);
       })

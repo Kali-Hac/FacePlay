@@ -17,11 +17,15 @@
 <div class="card mb-3">
             <div class="card-header">
               <i class="fa fa-pie-chart"></i>人脸识别情况</div>
-            <div class="card-body">
+            <div class="card-body" id="state_1" style="display: block">
               <p>
-					<li><input type="checkbox"  checked="yes"/><br/></li>
+					<ul>
+	            {% for id in un_ids_1 %}
+					<li><input type="checkbox"  checked="yes"/>{{id}}<br/></li>
+	            {% endfor %}
+                    </ul>
               </p>
-	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0">确认并提交缺课情况</a>
+	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0" onclick="confirm_info(1)">确认并提交缺课情况</a>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
           </div>
@@ -41,11 +45,15 @@
 <div class="card mb-3">
             <div class="card-header">
               <i class="fa fa-pie-chart"></i>人脸识别情况</div>
-            <div class="card-body">
+           <div class="card-body" id="state_2" style="display: block">
               <p>
-					<li><input type="checkbox"  checked="yes"/><br/></li>
+					<ul>
+	            {% for id in un_ids_2 %}
+					<li><input type="checkbox"  checked="yes"/>{{id}}<br/></li>
+	            {% endfor %}
+                    </ul>
               </p>
-	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0">确认并提交缺课情况</a>
+	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0" onclick="confirm_info(2)">确认并提交缺课情况</a>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
           </div>
@@ -65,11 +73,15 @@
 <div class="card mb-3">
             <div class="card-header">
               <i class="fa fa-pie-chart"></i>人脸识别情况</div>
-            <div class="card-body">
+           <div class="card-body" id="state_3" style="display: block">
               <p>
-					<li><input type="checkbox"  checked="yes"/><br/></li>
+					<ul>
+	            {% for id in un_ids_3 %}
+					<li><input type="checkbox"  checked="yes"/>{{id}}<br/></li>
+	            {% endfor %}
+                    </ul>
               </p>
-	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0">确认并提交缺课情况</a>
+	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0"onclick="confirm_info(3)">确认并提交缺课情况</a>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
           </div>
@@ -89,11 +101,15 @@
 <div class="card mb-3">
             <div class="card-header">
               <i class="fa fa-pie-chart"></i>人脸识别情况</div>
-            <div class="card-body">
+           <div class="card-body" id="state_4" style="display: block">
               <p>
-					<li><input type="checkbox"  checked="yes"/><br/></li>
+					<ul>
+	            {% for id in un_ids_4 %}
+					<li><input type="checkbox"  checked="yes"/>{{id}}<br/></li>
+	            {% endfor %}
+                    </ul>
               </p>
-	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0">确认并提交缺课情况</a>
+	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0"onclick="confirm_info(4)">确认并提交缺课情况</a>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
           </div>
@@ -113,11 +129,15 @@
 <div class="card mb-3">
             <div class="card-header">
               <i class="fa fa-pie-chart"></i>人脸识别情况</div>
-            <div class="card-body">
+            <div class="card-body" id="state_5" style="display: block">
               <p>
-					<li><input type="checkbox"  checked="yes"/><br/></li>
+	              <ul>
+	            {% for id in un_ids_5 %}
+					<li><input type="checkbox"  checked="yes"/>{{id}}<br/></li>
+	            {% endfor %}
+                    </ul>
               </p>
-	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0">确认并提交缺课情况</a>
+	            <a class="btn btn-primary btn-block" style="background-color: #0cd06c;margin-bottom:0"onclick="confirm_info(5)">确认并提交缺课情况</a>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
           </div>

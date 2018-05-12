@@ -153,6 +153,7 @@ def identfiy_all(origin_img):
 				# else:
 				# 	print("### 未能识别出该人脸，该图片名字为：%s" % basedir.split('\\')[1])
 		np.save('face_name.npy', all_faces_dir)
+		print(all_faces_dir)
 	# else:
 	result = test_face(origin_img, all_faces_dir)
 	if result:
@@ -227,8 +228,9 @@ def test_face(origin_img, srcimg_dir):
 	for i in range(len(imglist1)):
 		imglist1[i] = imglist1[i].transpose(2, 0, 1).reshape((1, 3, 112, 96))
 		imglist1[i] = (imglist1[i] - 127.5) / 128.0
-	if (tell(imglist1, img_name)):
-		return True
+	result = tell(imglist1, img_name)
+	if result:
+		return result
 	else:
 		return False
 
@@ -291,7 +293,6 @@ def malasong(src, upload_cnt):
 	cv2.imwrite('Recognition/' + str(upload_cnt) + '.jpg', img)
 	return faces, img
 
-
 def compilface(src, upload_cnt):  # 输入待匹配的图片路径，输出和数据库中匹配到的图片
 	faces, img = malasong(src, upload_cnt)
 	face_dir = []
@@ -300,35 +301,50 @@ def compilface(src, upload_cnt):  # 输入待匹配的图片路径，输出和�
 		ids.append(dir)
 		for file in os.listdir('FACEs/' + dir):
 			face_dir.append('FACEs/' + dir + '/' + file)
-	print(face_dir)
+	# print(face_dir)
 	imglist1 = []
 	for file in face_dir:
 		aface = cv2.imread(file)
-		imglist1.append(aface)
-	print(imglist1)
+		landmark, _ = generate_landmark(file)
+		img = alignment(aface, landmark)
+		imglist1.append(img)
+	print(len(imglist1))
+	# print(imglist1)
 	imglist2 = []
 	# faces是合照里面的各种脸，对应imglist2
 	for face in faces:
 		imglist2.append(face)
+	print(len(imglist2))
 	i1 = [i for i in imglist1]
-	i2 = [i for i in imglist2]
+	for tttt in imglist2:
+		i1.append(tttt)
+
+	# i2 = [i for i in imglist2]
+	# i1.extend(i2)
 	out1 = getOutput(i1)
-	out2 = getOutput(i2)
+	# out2 = getOutput(i2)
+	out2=out1[(len(i1)-len(imglist2)):]
+	out3=out1[0:(len(i1)-len(imglist2))]
+	print((len(i1)-len(imglist2)), len(i1))
 	recog_ids = []
-	for j, f1 in enumerate(out1):
+	for j, f1 in enumerate(out3):
 		cos = []
+		# for f2 in out2:
 		for f2 in out2:
 			cosdistance = f1.dot(f2) / (f1.norm() * f2.norm() + 1e-5)
+			# 有bug的标记
 			cos.append(cosdistance)
 		idx = cos.index(max(cos))
-		if (max(cos) <= 0.3085):
+		# 0.3085
+		if (max(cos) <= 0.35):
 			# print('no match')
 			continue
 		else:
-			# print(idx, max(cos))
+			print(idx, max(cos))
 			recog_ids.append(ids[j])
 			# cv2.imwrite('aface/aface%s_0.jpg' % str(j), imglist1[j])
 			# cv2.imwrite('aface/aface%s_1.jpg' % str(j), imglist2[idx])
+	print(list(set(ids) - set(recog_ids)))
 	return list(set(ids) - set(recog_ids))
 
 
@@ -340,3 +356,14 @@ def getOutput(imglist):
 	img = Variable(torch.from_numpy(img).float(), volatile=True)
 	output = net(img)
 	return output
+
+# def ali_datasets():
+# 	for dir in os.listdir('FACEs'):
+# 		for file in os.listdir('FACEs/'+dir):
+# 			origin_img='FACEs/'+dir+'/'+file
+# 			img=cv2.imread(origin_img)
+# 			landmark, _ = generate_landmark(origin_img)
+# 			img = alignment(img, landmark)
+# 			cv2.imwrite(origin_img,img)
+#
+# ali_datasets()
