@@ -8,6 +8,8 @@ import numpy as np
 # 关闭以提高速度
 import main
 
+success_flag = False
+global_name = ''
 IMG_base64 = None
 upload_cnt = 0
 # Create your views here.
@@ -31,17 +33,22 @@ def index(request):
 	# 	return render(request, 'login.html')
 	# else:
 	# 	print("#### 用户刷新界面")
-	if request.session["type"] == 't':
-		return render(request, 'index.html', {'name': request.session["name"]})
-	else:
-		return render(request, 'student.html', {'name': request.session["name"]})
+	return render(request, 'index.html', {'name': '饶浩聪'})
+	# return render(request, 'student.html', {'name': request.session["name"]})
+	# else:
+	# 	if request.session["type"] == 't':
+	# 		return render(request, 'index.html', {'name': request.session["name"]})
+	# 	else:
+	# 		return render(request, 'student.html', {'name': request.session["name"]})
 
 def student(request):
 	return render(request, 'student.html', {'name': request.session["name"]})
 
 def login(request):
-	request.session.pop("name")
-	request.session.pop("type")
+	if 'name' in request.session.keys():
+		request.session.pop("name")
+		if 'name' in request.session.keys():
+			request.session.pop("type")
 	return render(request, 'login.html')
 
 
@@ -50,8 +57,9 @@ def forgot(request):
 
 
 def register(request):
-	request.session.pop("name")
-	request.session.pop("type")
+	if 'name' in request.session.keys():
+		request.session.pop("name")
+		request.session.pop("type")
 	if request.method == 'POST':
 		name = request.POST.get('name')
 		tel = request.POST.get('tel')
@@ -150,11 +158,15 @@ def identify_face(request):
 			# else:
 			# 	entry_show = "block"
 		# print(no_face_show, entry_show, strange_face_show, face_show)
+		if success_flag:
+			entry_show = "block"
+			request.session["name"] = global_name
 		return render(request, 'face.html', locals())
 	else:
 		return render(request, "face.html")
 
 def face_result(request):
+	global success_flag, global_name
 	if request.method == 'POST':
 		image_base64 = IMG_base64
 		face_identify = False
@@ -172,14 +184,18 @@ def face_result(request):
 				face_name = user.t_name
 				request.session["name"] = face_name
 				request.session["type"] = 't'
+				# return render(request, 'index.html', {'name': request.session["name"]})
 			except:
 				try:
 					user = Student.objects.get(s_tel=face_name.split('.')[0])
 					face_name = user.s_name
 					request.session["name"] = face_name
 					request.session["type"] = 's'
+					# return render(request, 'student.html', {'name': request.session["name"]})
 				except:
 					face_name = True
+			global_name = face_name
+			success_flag = True
 			entry_show = "block"
 		# print(no_face_show, entry_show, strange_face_show, face_show)
 		return render(request, 'face.html', locals())
@@ -188,32 +204,35 @@ def face_result(request):
 
 
 def login_check(request):
-	ID = request.POST.get('lg_id')
-	password = request.POST.get('lg_pwd')
-	print(ID + " " + password)
-
-	try:
-		if ID[0] == '1':
-			user = Teacher.objects.get(t_id=ID)
-			pwd = user.t_pwd
-			name = user.t_name
-		else:
+	if request.method == 'POST':
+		ID = request.POST.get('lg_id')
+		password = request.POST.get('lg_pwd')
+		print(ID + " " + password)
+		# return render(request, 'index.html', {'name': '管理员'})
+		flag = 0
+		pwd = ''
+		try:
 			user = Student.objects.get(s_id=ID)
 			pwd = user.s_pwd
 			name = user.s_name
-		# print(user.password)
+		except:
+			user = Teacher.objects.get(t_id=ID)
+			pwd = user.t_pwd
+			name = user.t_name
+			flag = 1
+			# print(user.password)
 		if pwd == password:
 			print("#### 登录用户 —— ID：%s 密码：%s\n" % (ID, password))
 			request.session["name"] = name
 			print("登陆进去")
 			# bug
-			if ID[0] == '2':
-				return render(request, 'student.html', {'name': name})
-			else:
+			if flag == 1:
 				return render(request, 'index.html', {'name': name})
-		return render(request, 'login_unsuccess.html')
-	except:
-		return render(request, 'login_unsuccess.html')
+			else:
+				return render(request, 'student.html', {'name': name})
+		# return render(request, 'login_unsuccess.html')
+		else:
+			return render(request, 'login_unsuccess.html')
 
 def charts(request):
 	return render(request, 'class_info.html')
@@ -250,28 +269,32 @@ def message(request):
 	return render(request, 'message.html')
 
 def read_record(request):
-	if not os.path.exists('imgs.npy'):
-		imgs = []
-		for i in range(1, 6):
-			try:
-				with open('Recognition/' + str(i) + '.jpg', "rb") as f:
-					base64_data = base64.b64encode(f.read())
-				base64_data = str(base64_data, encoding="utf-8")
-				image_base64 = "data:image/jpg;base64," + base64_data
-				imgs.append(image_base64)
-			except:
-				pass
-		np.save('imgs.npy', imgs)
-	else:
-		imgs = np.load('imgs.npy')
-	try:
-		imgs = imgs.tolist()
-	except:
-		pass
+	imgs = []
+	for i in range(1, 6):
+		try:
+			with open('Recognition/' + str(i) + '.jpg', "rb") as f:
+				base64_data = base64.b64encode(f.read())
+			base64_data = str(base64_data, encoding="utf-8")
+			image_base64 = "data:image/jpg;base64," + base64_data
+			imgs.append(image_base64)
+		except:
+			pass
 	if len(imgs) < 5:
 		for i in range(5 - len(imgs)):
 			imgs.append('')
-	return render(request, 'read_record.html', {'img_1': imgs[0], 'img_2': imgs[1],'img_3': imgs[2],'img_4': imgs[3],'img_5': imgs[4],})
+	un_ids = [[], [], [], [], [], []]
+	temp = os.listdir('Recognition')
+	for i in temp:
+		if i.split('.')[1] == 'txt':
+			f = open('Recognition/' + i, 'r')
+			lines = f.readlines()
+			names = []
+			for line in lines:
+				names.append(line.replace('\n', ''))
+			un_ids[int(i.split('.')[0][-1])] = names
+	return render(request, 'read_record.html', {'img_1': imgs[0], 'img_2': imgs[1],
+	'img_3': imgs[2],'img_4': imgs[3],'img_5': imgs[4],'un_ids_1': un_ids[1],
+	'un_ids_2': un_ids[2], 'un_ids_3': un_ids[3], 'un_ids_4': un_ids[4], 'un_ids_5': un_ids[5]})
 
 def send_message(request):
 	return render(request, 'send_message.html')

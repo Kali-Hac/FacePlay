@@ -1,15 +1,20 @@
-var port = '8778';
-var ip = 'localhost';
+var port = '8667';
+var ip = '192.168.43.169';
 function submit()
 {
-	// document.forms[0].submit();
+	document.forms[0].submit();
 	// console.log(exampleInputEmail1.value,exampleInputPassword1.value);
 	 // url需要改,change，192.168.188.105
-	 $.post("https://"+ip+":"+ port + "/FacePlay/login_check", {'lg_id' : exampleInputEmail1.value,
-	 	'lg_pwd': exampleInputPassword1.value},
-      function(data, status){
-          $('#msg').html(data);
-      })
+	 // var exampleInputEmail1 = document.getElementById('exampleInputEmail1');
+	 // var exampleInputPassword1 = document.getElementById('exampleInputPassword1');
+	 // console.log( exampleInputEmail1.value);
+	 // console.log(exampleInputPassword1.value);
+	 // $.post("https://"+ip+":"+ port + "/FacePlay/login_check", {'lg_id':exampleInputEmail1.value, 'lg_pwd':exampleInputPassword1.value},
+  //     function(data, status){
+  //         // $('#msg').html(data);
+  //         // 'lg_id' : exampleInputEmail1.value,
+	 // 	// 'lg_pwd': exampleInputPassword1.value
+  //     })
 }
 
 function charts()
@@ -112,7 +117,7 @@ function confirm_info(cnt){
 
 function clean_info()
 {
-	 $.post("http://"+ip+":"+ port + "/FacePlay/logout", {},
+	 $.post("https://"+ip+":"+ port + "/FacePlay/logout", {},
       function(data, status){
           // $('#change').html(data);
       })

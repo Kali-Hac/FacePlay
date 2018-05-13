@@ -278,11 +278,12 @@ def get_face(base64_data):
 
 def malasong(src, upload_cnt):
 	img = cv2.imread(src)
+	# img = cv2.resize(img, (img.shape[1] // 5, img.shape[0] // 5))
 	tmp = detector.detect_faces(img)
 	faces = []
 	for t in tmp:
 		box = t['box']
-		cv2.rectangle(img, (box[0], box[1]), (box[0] + box[2], box[1] + box[3]), (0, 255, 0), 1)
+		cv2.rectangle(img, (box[0], box[1]), (box[0] + box[2], box[1] + box[3]), (0, 255, 0), 4)
 		keypoints = t['keypoints']
 		landmark = []
 		for t in list(keypoints.items()):

@@ -1,5 +1,5 @@
-var port = '8778';
-var ip = 'localhost';
+var port = '8667';
+var ip = '192.168.43.169';
 //访问用户媒体设备的兼容方法
 function getUserMedia(constrains,success,error){
     if(navigator.mediaDevices.getUserMedia){
@@ -104,7 +104,7 @@ if(option === 'login'){
               $('#change').html(data);
         })
       }
-      },2000); //两秒执行一次人脸识别
+      },3000); //两秒执行一次人脸识别
 
     // setTimeout(function(){
     //   context.drawImage(video,0,0,360,300);
@@ -117,10 +117,24 @@ if(option === 'login'){
    // }, 2500);//最快1s+使画布初始化
 }
 }
+function IsPC(){    
+     var userAgentInfo = navigator.userAgent;  
+     var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");    
+     var flag = true;    
+     for (var v = 0; v < Agents.length; v++) {    
+         if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }    
+     }    
+     return flag;    
+  }  
 
 function take_face(){
   var temp_img = document.getElementById("temp_img");
+  // if(IsPC())
   var image = document.getElementById("image");
+  // else{
+  //    var image = document.getElementById("tel_image");
+  //    image.style.display="block";
+  //  }
   var msg = document.getElementById("msg");
   setTimeout(function(){
   temp_img.src = canvas.toDataURL('image/png');

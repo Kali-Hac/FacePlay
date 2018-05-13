@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>堂堂查</title>
+  <title>一图查堂</title>
   <!-- Bootstrap core CSS-->
   <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
@@ -31,6 +31,8 @@
         <!--<form action="upload" method="POST">-->
             <!--{% csrf_token %}-->
           <input id="image" style="display:none" name="upload_img" value=""/>
+        <!--手机端登录-->
+         <input type="file" id="tel_image" accept="image/*" style="display:none" capture="camera">
         <!--</form>-->
         <canvas id="canvas" style="margin:0 auto; display:none"  width="360" height="300" ></canvas>
          <img src="" id="temp_img" style="display: none">
@@ -42,13 +44,13 @@
     </div>
    <div class="container"  id="login" style="display:block;" >
     <div class="card card-login mx-auto mt-5">
-      <div class="card-header">Login</div>
+      <div class="card-header">[一图查堂] Login</div>
       <div class="card-body">
-        <form action="./" method="POST">
+        <form action="login_check" method="POST">
           {% csrf_token %}
           <div class="form-group">
             <label for="exampleInputEmail1">ID (教师/学生)</label>
-            <input class="form-control" id="exampleInputEmail1" name="lg_id" type="email" aria-describedby="emailHelp" placeholder="Enter Id">
+            <input class="form-control" id="exampleInputEmail1" name="lg_id"  aria-describedby="emailHelp" placeholder="Enter Id">
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Password</label>
