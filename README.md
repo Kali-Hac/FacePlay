@@ -54,21 +54,16 @@ var ip = 'localhost';
 - main.py人脸检测、人脸识别主要文件
 
 ### 作品Demo截图(注册->登录->教师端->学生端)
+### 流程图
+![](p/info.png)
+![](p/info_2.png)
 ### 注册
-![](p/register.png)
 ![](p/register2.png)
 ### 登录
-![](p/login.png)
 ![](p/login2.png)
 ### 教师端
 ![](p/teacher.png)
-![](p/teacher1.png)
-![](p/teacher1.5.png)
 ![](p/teacher2.png)
-![](p/teacher3.png)
-![](p/teacher4.png)
 ![](p/teacher6.png)
 ### 学生端
 ![](p/student1.png)
-![](p/student2.png)
-![](p/student3.png)
