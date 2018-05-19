@@ -1,4 +1,5 @@
 model/
+*.pth
 *.png
 *.jpg
 .idea/
