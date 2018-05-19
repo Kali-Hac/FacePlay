@@ -53,17 +53,22 @@ var ip = 'localhost';
 - 其它在主目录的图像均为临时图像（已隐藏并无上传）
 - main.py人脸检测、人脸识别主要文件
 
-### 作品截图(注册->登录->教师端->学生端)
-[](p/注册.png)
-[](p/注册2.png)
-[](p/登录.png)
-[](p/登录2.png)
-[](p/教师.png)
-[](p/教师1.png)
-[](p/教师1.5.png)
-[](p/教师2.png)
-[](p/教师3.png)
-[](p/教师4.png)
-[](p/教师6.png)
-[](p/学生1.png)
-[](p/学生2.png)
+### 作品Demo截图(注册->登录->教师端->学生端)
+### 注册
+![](p/register.png)
+![](p/register2.png)
+### 登录
+![](p/login.png)
+![](p/login2.png)
+### 教师端
+![](p/teacher.png)
+![](p/teacher1.png)
+![](p/teacher1.5.png)
+![](p/teacher2.png)
+![](p/teacher3.png)
+![](p/teacher4.png)
+![](p/teacher6.png)
+### 学生端
+![](p/student1.png)
+![](p/student2.png)
+![](p/student3.png)
