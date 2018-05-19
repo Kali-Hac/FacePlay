@@ -6,7 +6,7 @@ import os, base64
 import datetime
 import numpy as np
 # 关闭以提高速度
-# import main
+import main
 
 success_flag = False
 global_name = ''
