@@ -64,5 +64,6 @@ var ip = 'localhost';
 [](p/教师2.png)
 [](p/教师3.png)
 [](p/教师4.png)
+[](p/教师6.png)
 [](p/学生1.png)
 [](p/学生2.png)
