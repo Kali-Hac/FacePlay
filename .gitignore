@@ -1,6 +1,5 @@
 model/
 *.pth
-*.png
 *.jpg
 .idea/
 __pycache__/
