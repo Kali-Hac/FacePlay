@@ -1,5 +1,5 @@
 var port = '8667';
-var ip = '192.168.43.169';
+var ip = 'localhost';
 function submit()
 {
 	document.forms[0].submit();

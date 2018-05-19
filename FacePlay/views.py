@@ -6,7 +6,7 @@ import os, base64
 import datetime
 import numpy as np
 # 关闭以提高速度
-import main
+# import main
 
 success_flag = False
 global_name = ''
@@ -33,7 +33,7 @@ def index(request):
 	# 	return render(request, 'login.html')
 	# else:
 	# 	print("#### 用户刷新界面")
-	return render(request, 'index.html', {'name': '饶浩聪'})
+	return render(request, 'index.html', {'name': 'Demo测试员'})
 	# return render(request, 'student.html', {'name': request.session["name"]})
 	# else:
 	# 	if request.session["type"] == 't':
@@ -42,7 +42,10 @@ def index(request):
 	# 		return render(request, 'student.html', {'name': request.session["name"]})
 
 def student(request):
-	return render(request, 'student.html', {'name': request.session["name"]})
+	if 'name' in request.session.keys():
+		return render(request, 'student.html', {'name': request.session["name"]})
+	else:
+		return render(request, 'login.html')
 
 def login(request):
 	if 'name' in request.session.keys():
@@ -161,6 +164,7 @@ def identify_face(request):
 		if success_flag:
 			entry_show = "block"
 			request.session["name"] = global_name
+			face_name = global_name
 		return render(request, 'face.html', locals())
 	else:
 		return render(request, "face.html")
@@ -216,10 +220,13 @@ def login_check(request):
 			pwd = user.s_pwd
 			name = user.s_name
 		except:
-			user = Teacher.objects.get(t_id=ID)
-			pwd = user.t_pwd
-			name = user.t_name
-			flag = 1
+			try:
+				user = Teacher.objects.get(t_id=ID)
+				pwd = user.t_pwd
+				name = user.t_name
+				flag = 1
+			except:
+				return render(request, 'login_unsuccess.html')
 			# print(user.password)
 		if pwd == password:
 			print("#### 登录用户 —— ID：%s 密码：%s\n" % (ID, password))
@@ -390,3 +397,15 @@ def logout(request):
 	request.session.pop("name")
 	request.session.pop("type")
 	return login(request)
+
+
+def page_not_found(request):
+	return render(request, '404.html')
+
+
+def page_error(request):
+	return render(request, '404.html')
+
+
+def permission_denied(request):
+	return render(request, '404.html')

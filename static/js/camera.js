@@ -1,5 +1,5 @@
 var port = '8667';
-var ip = '192.168.43.169';
+var ip = 'localhost';
 //访问用户媒体设备的兼容方法
 function getUserMedia(constrains,success,error){
     if(navigator.mediaDevices.getUserMedia){
